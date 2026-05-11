@@ -1,0 +1,70 @@
+classDiagram
+  direction LR
+
+  class User {
+    +address: string
+    +name: string
+    +role: Role
+  }
+
+  class Owner
+  class Tenant
+  class Admin
+
+  User <|-- Owner
+  User <|-- Tenant
+  User <|-- Admin
+
+  class Property {
+    +id: uint
+    +title: string
+    +location: string
+    +description: string
+    +pricePerMonth: float
+    +available: bool
+    +imageURI: string
+  }
+
+  class RentalAgreement {
+    +id: uint
+    +propertyId: uint
+    +landlord: address
+    +tenant: address
+    +startDate: date
+    +endDate: date
+    +monthlyPrice: float
+    +depositAmount: float
+    +status: string
+  }
+
+  class Payment {
+    +id: uint
+    +rentalId: uint
+    +amount: float
+    +paidAt: date
+    +status: string
+  }
+
+  class RealEstateRegistry {
+    +listProperty()
+    +updateProperty()
+    +delistProperty()
+    +getAvailableProperties()
+  }
+
+  class RentalAgreementContract {
+    +createRental()
+    +activateRental()
+    +payRent()
+    +confirmPayment()
+    +completeRental()
+  }
+
+  Owner "1" --> "many" Property : owns
+  Tenant "1" --> "many" RentalAgreement : signs
+  Property "1" --> "many" RentalAgreement : linked to
+  RentalAgreement "1" --> "many" Payment : contains
+  RealEstateRegistry --> Property : manages
+  RentalAgreementContract --> RentalAgreement : manages
+  Admin --> RealEstateRegistry : supervises
+  Admin --> RentalAgreementContract : supervises

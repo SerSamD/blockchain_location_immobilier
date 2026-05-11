@@ -1,0 +1,28 @@
+sequenceDiagram
+  autonumber
+  actor Tenant
+  actor Owner
+  participant App as React Dashboard
+  participant Registry as RealEstateRegistry
+  participant Rental as RentalAgreementContract
+  participant Payment as Payment Ledger
+
+  Tenant->>App: Consulter les biens
+  App->>Registry: getAvailableProperties()
+  Registry-->>App: Liste des biens disponibles
+
+  Tenant->>App: Cliquer "Demander la location"
+  App->>Rental: createRental(propertyId, tenant, dates)
+  Rental-->>App: Contrat créé en attente
+
+  Owner->>App: Valider la demande
+  App->>Rental: activateRental(rentalId)
+  Rental-->>App: Contrat actif
+
+  Tenant->>App: Payer le loyer
+  App->>Payment: payRent(rentalId, amount)
+  Payment-->>App: Paiement enregistré
+
+  Owner->>App: Confirmer le paiement
+  App->>Payment: confirmPayment(paymentId)
+  Payment-->>App: Paiement confirmé
