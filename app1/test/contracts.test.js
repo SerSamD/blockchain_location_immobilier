@@ -197,7 +197,8 @@ contract("RentalAgreement", (accounts) => {
 
   describe("Creating Rentals", () => {
     it("should create a rental agreement", async () => {
-      const now = Math.floor(Date.now() / 1000);
+      const latest = await web3.eth.getBlock('latest');
+      const now = latest ? latest.timestamp : Math.floor(Date.now() / 1000);
       const startDate = now + 86400; // Tomorrow
       const endDate = now + 86400 * 30; // 30 days later
 
@@ -218,7 +219,8 @@ contract("RentalAgreement", (accounts) => {
     });
 
     it("should fail with invalid dates", async () => {
-      const now = Math.floor(Date.now() / 1000);
+      const latest = await web3.eth.getBlock('latest');
+      const now = latest ? latest.timestamp : Math.floor(Date.now() / 1000);
       
       try {
         await rental.createRental(
@@ -241,7 +243,8 @@ contract("RentalAgreement", (accounts) => {
     let startDate, endDate;
 
     beforeEach(async () => {
-      const now = Math.floor(Date.now() / 1000);
+      const latest = await web3.eth.getBlock('latest');
+      const now = latest ? latest.timestamp : Math.floor(Date.now() / 1000);
       startDate = now + 86400;
       endDate = now + 86400 * 30;
 
@@ -276,7 +279,8 @@ contract("RentalAgreement", (accounts) => {
     let startDate, endDate;
 
     beforeEach(async () => {
-      const now = Math.floor(Date.now() / 1000);
+      const latest = await web3.eth.getBlock('latest');
+      const now = latest ? latest.timestamp : Math.floor(Date.now() / 1000);
       startDate = now + 100; // Near future
       endDate = now + 86400 * 30;
 
@@ -292,6 +296,19 @@ contract("RentalAgreement", (accounts) => {
 
       // Activate rental
       await rental.activateRental(0, { from: landlord });
+      // Fast-forward EVM time so rental has started for payment tests
+      await new Promise((resolve, reject) => {
+        web3.currentProvider.send(
+          { jsonrpc: '2.0', method: 'evm_increaseTime', params: [200], id: Date.now() },
+          (err) => (err ? reject(err) : resolve())
+        );
+      });
+      await new Promise((resolve, reject) => {
+        web3.currentProvider.send(
+          { jsonrpc: '2.0', method: 'evm_mine', params: [], id: Date.now() + 1 },
+          (err) => (err ? reject(err) : resolve())
+        );
+      });
     });
 
     it("should pay rent", async () => {
@@ -331,7 +348,8 @@ contract("RentalAgreement", (accounts) => {
 
   describe("Rental Queries", () => {
     beforeEach(async () => {
-      const now = Math.floor(Date.now() / 1000);
+      const latest = await web3.eth.getBlock('latest');
+      const now = latest ? latest.timestamp : Math.floor(Date.now() / 1000);
       
       await rental.createRental(
         0,
