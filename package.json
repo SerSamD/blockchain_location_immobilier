@@ -17,6 +17,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "demo:screenshots": "node scripts/demo.js",
+    "demo:video": "node scripts/assemble-video.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -39,6 +41,8 @@
     ]
   },
   "devDependencies": {
-    "truffle": "^5.11.5"
+    "truffle": "^5.11.5",
+    "puppeteer": "^21.4.0",
+    "ffmpeg-static": "^5.1.0"
   }
 }
