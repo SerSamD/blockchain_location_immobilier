@@ -1,0 +1,31 @@
+flowchart LR
+  Owner([Owner])
+  Tenant([Tenant])
+  Admin([Admin])
+
+  subgraph System[Rental Platform]
+    UC1((Lister un bien))
+    UC2((Modifier / retirer un bien))
+    UC3((Consulter les biens disponibles))
+    UC4((Demander une location))
+    UC5((Signer un contrat))
+    UC6((Payer le loyer))
+    UC7((Consulter l'historique))
+    UC8((Valider un paiement))
+    UC9((Gérer les litiges))
+    UC10((Suivre les contrats))
+  end
+
+  Owner --> UC1
+  Owner --> UC2
+  Owner --> UC10
+
+  Tenant --> UC3
+  Tenant --> UC4
+  Tenant --> UC5
+  Tenant --> UC6
+  Tenant --> UC7
+
+  Admin --> UC8
+  Admin --> UC9
+  Admin --> UC10
